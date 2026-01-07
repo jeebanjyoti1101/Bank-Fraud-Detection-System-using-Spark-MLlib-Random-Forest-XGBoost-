@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Fraud Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt me-2"></i>
+                Bank Fraud Detection System
+            </a>
+            <button class="btn btn-outline-light" onclick="showModelInfo()">
+                <i class="fas fa-info-circle me-1"></i>
+                Model Info
+            </button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-gradient-primary text-white">
+                    <div class="card-body text-center">
+                        <h2><i class="fas fa-brain me-2"></i>AI-Powered Fraud Detection</h2>
+                        <p class="mb-0">Enter transaction details to check for potential fraud using Machine Learning</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Input Form -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-keyboard me-2"></i>Transaction Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="fraudForm">
+                            <!-- Customer Information -->
+                            <div class="mb-3">
+                                <h6 class="text-muted">
+                                    <i class="fas fa-user me-1"></i>
+                                    Customer Information
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Customer ID</label>
+                                        <input type="text" class="form-control" name="nameOrig" required placeholder="e.g., C2011200430">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Gender</label>
+                                        <select class="form-control" name="Gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Transaction Details -->
+                            <div class="mb-3">
+                                <h6 class="text-muted">
+                                    <i class="fas fa-money-bill-wave me-1"></i>
+                                    Transaction Details
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Date</label>
+                                        <input type="date" class="form-control" name="Date" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <input type="number" class="form-control" name="amount" step="0.01" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Balance Before</label>
+                                        <input type="number" class="form-control" name="oldbalanceOrg" step="0.01" required placeholder="0.00">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Balance After</label>
+                                        <input type="number" class="form-control" name="newbalanceOrig" step="0.01" required placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Transaction Categories -->
+                            <div class="mb-3">
+                                <h6 class="text-muted">
+                                    <i class="fas fa-tags me-1"></i>
+                                    Transaction Categories
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Transaction Type</label>
+                                        <select class="form-control" name="type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="TRANSFER">Transfer</option>
+                                            <option value="CASH_IN">Cash In</option>
+                                            <option value="CASH_OUT">Cash Out</option>
+                                            <option value="DEBIT">Debit</option>
+                                            <option value="PAYMENT">Payment</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Card Type</label>
+                                        <select class="form-control" name="Card Type" required>
+                                            <option value="">Select Card Type</option>
+                                            <option value="Gold">Gold</option>
+                                            <option value="Silver">Silver</option>
+                                            <option value="Platinum">Platinum</option>
+                                            <option value="Signature">Signature</option>
+                                            <option value="Classic">Classic</option>
+                                            <option value="Mass">Mass</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-control" name="Exp Type" required>
+                                            <option value="">Select Category</option>
+                                            <option value="Food">Food</option>
+                                            <option value="Entertainment">Entertainment</option>
+                                            <option value="Fuel">Fuel</option>
+                                            <option value="Grocery">Grocery</option>
+                                            <option value="Travel">Travel</option>
+                                            <option value="Bills">Bills</option>
+                                            <option value="Health_Fitness">Health & Fitness</option>
+                                            <option value="Personal_Care">Personal Care</option>
+                                            <option value="Home">Home</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Location</label>
+                                        <input type="text" class="form-control" name="City" required placeholder="e.g., Delhi, India">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Fill Options -->
+                            <div class="mb-3">
+                                <label class="form-label">Quick Fill Examples:</label>
+                                <div class="btn-group w-100" role="group">
+                                    <button type="button" class="btn btn-outline-success" onclick="fillNormalTransaction()">
+                                        <i class="fas fa-check me-1"></i>Normal
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" onclick="fillSuspiciousTransaction()">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>Suspicious
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="fillFraudTransaction()">
+                                        <i class="fas fa-times me-1"></i>Fraud
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-search me-2"></i>
+                                    Analyze Transaction
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                    <i class="fas fa-eraser me-1"></i>
+                                    Clear Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-chart-pie me-2"></i>Analysis Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="results" class="text-center text-muted">
+                            <i class="fas fa-robot fa-3x mb-3"></i>
+                            <p>Enter transaction details and click "Analyze Transaction" to see results</p>
+                        </div>
+                        
+                        <div id="loadingSpinner" class="text-center d-none">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Analyzing transaction...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Performance Card -->
+                <div class="card shadow mt-3" id="modelPerformanceCard" style="display: none;">
+                    <div class="card-header bg-dark text-white">
+                        <h6><i class="fas fa-chart-bar me-2"></i>Model Performance</h6>
+                    </div>
+                    <div class="card-body" id="modelPerformance">
+                        <!-- Model performance will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Processing Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-file-upload me-2"></i>Batch Processing</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Upload a CSV file with multiple transactions for batch analysis</p>
+                        <input type="file" class="form-control" id="csvFile" accept=".csv">
+                        <button class="btn btn-warning mt-2" onclick="processBatch()">
+                            <i class="fas fa-play me-1"></i>Process Batch
+                        </button>
+                        <div id="batchResults" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Model Info -->
+    <div class="modal fade" id="modelInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Model Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modelInfoContent">
+                    <!-- Model info will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Quick fill functions for bank transactions
+        function fillNormalTransaction() {
+            document.querySelector('[name="nameOrig"]').value = 'C2011200430';
+            document.querySelector('[name="Gender"]').value = 'M';
+            document.querySelector('[name="Date"]').value = '2024-01-15';
+            document.querySelector('[name="amount"]').value = '150.00';
+            document.querySelector('[name="oldbalanceOrg"]').value = '5000.00';
+            document.querySelector('[name="newbalanceOrig"]').value = '4850.00';
+            document.querySelector('[name="type"]').value = 'PAYMENT';
+            document.querySelector('[name="Card Type"]').value = 'Gold';
+            document.querySelector('[name="Exp Type"]').value = 'Food';
+            document.querySelector('[name="City"]').value = 'Delhi, India';
+        }
+
+        function fillSuspiciousTransaction() {
+            document.querySelector('[name="nameOrig"]').value = 'C999999999';
+            document.querySelector('[name="Gender"]').value = 'F';
+            document.querySelector('[name="Date"]').value = '2024-01-15';
+            document.querySelector('[name="amount"]').value = '8500.00';
+            document.querySelector('[name="oldbalanceOrg"]').value = '2000.00';
+            document.querySelector('[name="newbalanceOrig"]').value = '15000.00'; // Unusual balance increase
+            document.querySelector('[name="type"]').value = 'TRANSFER';
+            document.querySelector('[name="Card Type"]').value = 'Platinum';
+            document.querySelector('[name="Exp Type"]').value = 'Entertainment';
+            document.querySelector('[name="City"]').value = 'Unknown Location';
+        }
+
+        function fillFraudTransaction() {
+            document.querySelector('[name="nameOrig"]').value = 'C_FRAUD_001';
+            document.querySelector('[name="Gender"]').value = 'M';
+            document.querySelector('[name="Date"]').value = '2024-01-15';
+            document.querySelector('[name="amount"]').value = '50000.00';
+            document.querySelector('[name="oldbalanceOrg"]').value = '100.00';
+            document.querySelector('[name="newbalanceOrig"]').value = '100.00'; // Balance doesn't change with large amount
+            document.querySelector('[name="type"]').value = 'TRANSFER';
+            document.querySelector('[name="Card Type"]').value = 'Signature';
+            document.querySelector('[name="Exp Type"]').value = 'Entertainment';
+            document.querySelector('[name="City"]').value = 'Suspicious Location';
+        }
+
+        function clearForm() {
+            document.getElementById('fraudForm').reset();
+        }
+
+        // Form submission
+        document.getElementById('fraudForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                // Convert numeric fields to numbers (matching backend schema)
+                if (key === 'amount' || key === 'oldbalanceOrg' || key === 'newbalanceOrig') {
+                    data[key] = parseFloat(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // Graceful handling when server returns non-JSON (e.g., HTML error page)
+                const contentType = response.headers.get('content-type') || '';
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`Server error ${response.status}: ${text.slice(0, 200)}`);
+                }
+
+                let result;
+                if (contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    const text = await response.text();
+                    throw new Error(`Unexpected response type (${contentType}). Body starts with: ${text.slice(0, 100)}`);
+                }
+                showLoading(false);
+                displayResults(result);
+            } catch (error) {
+                showLoading(false);
+                displayError('Error analyzing transaction: ' + error.message);
+            }
+        });
+
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').classList.toggle('d-none', !show);
+            document.getElementById('results').style.display = show ? 'none' : 'block';
+        }
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (result.error) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error: ${result.error}
+                        ${result.missing ? '<br><small>Missing fields: ' + result.missing.join(', ') + '</small>' : ''}
+                    </div>
+                `;
+                return;
+            }
+            
+            // Normalize fields to support multiple backend formats
+            const isFraud = (typeof result.is_fraud === 'boolean') ? result.is_fraud : (result.status ? result.status.toLowerCase() === 'rejected' : false);
+            const rawProb = (typeof result.fraud_probability === 'number') ? result.fraud_probability : 0;
+            // If probability looks like a fraction (<=1), convert to percent; else assume it's already percent
+            const probabilityPercent = rawProb <= 1 ? (rawProb * 100) : rawProb;
+            const riskLevel = result.risk_level || (isFraud ? 'High Risk' : 'Low Risk');
+            
+            // Build warnings list if any
+            let warningsHtml = '';
+            if (Array.isArray(result.warnings) && result.warnings.length > 0) {
+                warningsHtml = `
+                    <div class="alert alert-warning mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Please review the following warnings:
+                        <ul class="mb-0 mt-1">
+                            ${result.warnings.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            const alertClass = isFraud ? 'alert-danger' : 'alert-success';
+            const icon = isFraud ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            const statusText = isFraud ? 'FRAUD DETECTED' : 'TRANSACTION APPROVED';
+            
+            let riskFactorsHtml = '';
+            if (result.risk_factors && result.risk_factors.length > 0) {
+                riskFactorsHtml = `
+                    <div class="mt-3">
+                        <h6 class="text-warning">⚠️ Risk Factors Detected:</h6>
+                        <ul class="list-unstyled">
+                            ${result.risk_factors.map(factor => `<li><i class="fas fa-exclamation-circle text-warning me-1"></i>${factor}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = `
+                <div class="alert ${alertClass} text-center">
+                    <i class="${icon} fa-2x mb-2"></i>
+                    <h4>${statusText}</h4>
+                    <p class="mb-0">Risk Level: <strong>${riskLevel}</strong></p>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="card border-info">
+                            <div class="card-body">
+                                <h5 class="card-title text-info">Fraud Probability</h5>
+                                <h2 class="text-primary">${(probabilityPercent).toFixed(2)}%</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">Confidence</h5>
+                                ${(() => {
+                                    const conf = (typeof result.confidence === 'number') ? result.confidence : (typeof result.model_confidence === 'number' ? result.model_confidence : 0);
+                                    const confPercent = conf <= 1 ? (conf * 100) : conf;
+                                    return `<h2 class="text-success">${confPercent.toFixed(2)}%</h2>`;
+                                })()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress mt-3">
+                    <div class="progress-bar ${isFraud ? 'bg-danger' : 'bg-success'}" 
+                         style="width: ${probabilityPercent}%"></div>
+                </div>
+                <small class="text-muted">Fraud Risk Indicator</small>
+                
+                ${riskFactorsHtml}
+                ${warningsHtml}
+                
+                <div class="mt-3">
+                    <h6 class="text-muted">Transaction Summary:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small>
+                                <strong>Amount:</strong> $${result.transaction_details?.amount?.toLocaleString() || 'N/A'}<br>
+                                <strong>Type:</strong> ${result.transaction_details?.transaction_type || 'N/A'}<br>
+                                <strong>Card:</strong> ${result.transaction_details?.card_type || 'N/A'}
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <small>
+                                <strong>Category:</strong> ${result.transaction_details?.category || 'N/A'}<br>
+                                <strong>Location:</strong> ${result.transaction_details?.location || 'N/A'}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    ${message}
+                </div>
+            `;
+        }
+
+        async function showModelInfo() {
+            try {
+                const response = await fetch('/api/model_info');
+                const info = await response.json();
+                
+                let content = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Model Status</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-tree me-1"></i> Random Forest: ${info.models_available.random_forest ? '✅ Loaded' : '❌ Not Available'}</li>
+                                <li><i class="fas fa-bolt me-1"></i> Gradient Boosted Trees: ${info.models_available.gradient_boosted_trees ? '✅ Loaded' : '❌ Not Available'}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Dataset Info</h6>
+                            <p><strong>Type:</strong> ${info.dataset_type || 'Unknown'}</p>
+                            <p><strong>Features:</strong> ${info.feature_count || 0}</p>
+                        </div>
+                    </div>
+                    
+                    <h6>Required Input Fields</h6>
+                    <div class="row">
+                        <div class="col-12">
+                            <small class="text-muted">
+                                ${info.input_features ? info.input_features.join(', ') : 'Not available'}
+                            </small>
+                        </div>
+                    </div>
+                `;
+                
+                if (info.model_metrics) {
+                    content += `
+                        <h6 class="mt-3">Model Performance</h6>
+                        <div class="row">
+                    `;
+                    
+                    for (const [modelName, metrics] of Object.entries(info.model_metrics)) {
+                        content += `
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">${modelName.replace('_', ' ').toUpperCase()}</div>
+                                    <div class="card-body">
+                                        <small>
+                                            AUC: ${(metrics.auc * 100).toFixed(2)}%<br>
+                                            Accuracy: ${(metrics.accuracy * 100).toFixed(2)}%<br>
+                                            F1 Score: ${(metrics.f1_score * 100).toFixed(2)}%
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    content += '</div>';
+                }
+                
+                document.getElementById('modelInfoContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('modelInfoModal')).show();
+                
+            } catch (error) {
+                alert('Error loading model info: ' + error.message);
+            }
+        }
+
+        // Batch processing (simplified for demo)
+        function processBatch() {
+            const fileInput = document.getElementById('csvFile');
+            if (!fileInput.files[0]) {
+                alert('Please select a CSV file first');
+                return;
+            }
+            
+            // This would need additional implementation for CSV parsing
+            document.getElementById('batchResults').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Batch processing feature would parse the CSV and send multiple predictions to /predict-batch endpoint.
+                    <br><small>Expected CSV columns: Date, Customer_ID, Amount, Balance_After, Balance_Before, Location, Transaction_Type, Card_Type, Category, Gender</small>
+                </div>
+            `;
+        }
+
+        // Load model performance on page load
+        window.addEventListener('load', async () => {
+            // Set default date to today
+            document.querySelector('[name="Date"]').value = new Date().toISOString().split('T')[0];
+            
+            try {
+                const response = await fetch('/api/model_info');
+                const info = await response.json();
+                
+                if (info.model_metrics) {
+                    document.getElementById('modelPerformanceCard').style.display = 'block';
+                    
+                    let perfContent = '';
+                    for (const [modelName, metrics] of Object.entries(info.model_metrics)) {
+                        perfContent += `
+                            <div class="mb-2">
+                                <strong>${modelName.replace('_', ' ').toUpperCase()}</strong>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${metrics.auc * 100}%">
+                                        AUC: ${(metrics.auc * 100).toFixed(1)}%
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    document.getElementById('modelPerformance').innerHTML = perfContent;
+                }
+            } catch (error) {
+                console.log('Could not load model performance');
+            }
+        });
+    </script>
+</body>
+</html>
